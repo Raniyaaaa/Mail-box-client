@@ -62,6 +62,7 @@ const Login=()=>{
             console.log("User has successfully Logged In")
             console.log(data)
             localStorage.setItem('token',data.idToken)
+            localStorage.setItem('email',data.email)
             navigate("/home");
             resetForm();
         })
