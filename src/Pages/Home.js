@@ -13,7 +13,7 @@ const Home=()=>{
           padding: '0 1rem',
         }}
       >
-        <Navbar.Brand>Welcome to your mail box !!! </Navbar.Brand>
+        <Navbar.Brand>Welcome to your mail box !!!</Navbar.Brand>
       </Navbar>
     )
 }
