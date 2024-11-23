@@ -28,7 +28,6 @@ const Login=()=>{
             alert('Passwords do not match!');
             return;
         }
-        
         let url;
         if(isLogin){
             url='https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=API_KEY'
