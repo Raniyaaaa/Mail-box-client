@@ -1,13 +1,14 @@
 import { useRef, useState } from "react"
 import { Alert, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link,useNavigate  } from "react-router-dom";
 import MainNavigation from "../MainNavigation/MainNavigation";
 
 const Login=()=>{
-    const [isLogin,setIsLogin]=useState(true)
+    const [isLogin,setIsLogin]=useState(false)
     const emailInputRef=useRef();
     const passwordInputRef=useRef();
     const confirmPasswordInputRef=useRef();
+    const navigate=useNavigate();
 
     function resetForm() {
         emailInputRef.current.value = '';
@@ -60,6 +61,9 @@ const Login=()=>{
         })
         .then((data)=>{
             console.log("User has successfully Logged In")
+            console.log(data)
+            localStorage.setItem('token',data.idToken)
+            navigate("/home");
             resetForm();
         })
         .catch((err)=>{
@@ -109,7 +113,7 @@ const Login=()=>{
                         </label>
                     </div>)}
                     <div>
-                        <Button variant="primary" type="submit">{isLogin? 'Login':'SignUp'}</Button>
+                        <Button variant="primary" type="submit">{isLogin? 'Login':'Sign Up'}</Button>
                     </div>
                     {isLogin && (
                             <div className="mt-1">
@@ -119,7 +123,7 @@ const Login=()=>{
                 </form>
             </section>
             <section>
-            <Alert variant='success' onClick={toggleAuthModeHandler}>{isLogin? 'Create New Account': 'Have an Account? Login'}</Alert>
+            <Alert variant='success' onClick={toggleAuthModeHandler}>{isLogin? 'Dont have an account? Sign up': 'Have an Account? Login'}</Alert>
             </section>
         </div>
         </>
