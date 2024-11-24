@@ -110,6 +110,7 @@ export const deleteEmail = (email, messageId) => async (dispatch) => {
   try {
     await axios.delete(`your_url/${email}/received/${messageId}.json`);
     dispatch(removeReceivedEmail(messageId));
+
   } catch (error) {
     dispatch(setError('Error deleting received email'));
   }

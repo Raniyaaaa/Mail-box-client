@@ -17,8 +17,6 @@ function App() {
       <Routes>
 
         <Route path="/" element={isLoggedIn ? <Navigate to="/home/inbox" /> : <Login />} />
-
-
         <Route path="/home" element={isLoggedIn ? <Home /> : <Navigate to="/" />}>
           <Route path="inbox" element={<Inbox />} />
           <Route path="unread" element={<Unread />} />

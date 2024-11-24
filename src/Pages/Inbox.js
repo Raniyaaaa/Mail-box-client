@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchReceivedEmails, markAsRead, deleteEmail, fetchSendEmails } from '../Store/EmailSlice';
+import { fetchReceivedEmails, markAsRead, deleteEmail } from '../Store/EmailSlice';
 import { BsCircleFill, BsTrash2Fill } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import Details from './Details';
@@ -11,13 +11,28 @@ const Inbox = () => {
   const email = localStorage.getItem('email') ? localStorage.getItem('email').replace(/[@.]/g, '') : '';
   const [selectedMessage, setSelectedMessage] = useState(null);
   const navigate = useNavigate();
+  const [previousEmailIds, setPreviousEmailIds] = useState([]);
 
   useEffect(() => {
-    if (email) {
-      dispatch(fetchReceivedEmails(email));
-      dispatch(fetchSendEmails(email));
-    }
-  }, [dispatch, email]);
+
+    const fetchEmails = async () => {
+      await dispatch(fetchReceivedEmails(email));
+
+      const currentEmailIds = receivedMessages.map((message) => message.id);
+
+      if (
+        currentEmailIds.length !== previousEmailIds.length ||
+        !currentEmailIds.every((id, index) => id === previousEmailIds[index])
+      ) {
+        setPreviousEmailIds(currentEmailIds);
+      }
+    };
+
+    const intervalId = setInterval(fetchEmails, 2000);
+
+    return () => clearInterval(intervalId);
+  }, [dispatch, email, receivedMessages, previousEmailIds]);
+
 
   const handleMarkAsRead = (id) => {
     dispatch(markAsRead(email,id));
