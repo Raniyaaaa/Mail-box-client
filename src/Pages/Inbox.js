@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Col,Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 
 const Inbox = () => {
     const [emails, setEmails] = useState([]);
@@ -46,20 +46,21 @@ const Inbox = () => {
     }
 
     return (
-        <div style={{paddingTop:'2rem',marginLeft:'1rem'}}>
+        <div style={{ paddingTop: '2rem', marginLeft: '1rem' }}>
             <ul style={{ listStyleType: "none", padding: 0 }}>
                 {emails.map((email) => (
-                    <Col>
                     <li key={email.id} style={{ border: "1px solid #ccc", padding: "10px", margin: "10px 0" }}>
-                        <Row><p><strong>{email.recipient}</strong></p> <p><strong>{email.subject}</strong></p><p>{email.body}</p>
-                        {email.attachment && (
-                            <p>
-                                <strong>Attachment:</strong> <a href={email.attachment} download>Download</a>
-                            </p>
-                        )}
+                        <Row>
+                            <p><strong>{email.recipient}</strong></p>
+                            <p><strong>{email.subject}</strong></p>
+                            <p>{email.body}</p>
+                            {email.attachment && (
+                                <p>
+                                    <strong>Attachment:</strong> <a href={email.attachment} download>Download</a>
+                                </p>
+                            )}
                         </Row>
                     </li>
-                    </Col>
                 ))}
             </ul>
         </div>
