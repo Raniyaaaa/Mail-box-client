@@ -28,11 +28,11 @@ const ComposeEmail = ({ show, onHide }) => {
         let receiveEmail = recipient.replace(/[@.]/g, '');
 
         try {
-            // Send email to sender's "send" folder
+
             const senderResponse = await axios.post(`your_url/${sendEmail}/send.json`, formData);
             console.log("Sender email sent successfully:", senderResponse);
 
-            // Send email to recipient's "received" folder
+
             const receiverResponse = await axios.post(`your_url/${receiveEmail}/received.json`, formData);
             console.log("Receiver email received successfully:", receiverResponse);
 
@@ -44,12 +44,12 @@ const ComposeEmail = ({ show, onHide }) => {
     };
 
     const handleClose = () => {
-        // Reset the fields when the modal is closed
+
         setRecipient("");
         setSubject("");
         setEditorState(EditorState.createEmpty());
         setAttachment(null);
-        onHide(); // Close the modal
+        onHide();
     };
     
     return (
