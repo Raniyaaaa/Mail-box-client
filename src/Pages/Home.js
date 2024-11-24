@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Navbar, Button, Col, Alert, Container, Row, Badge } from "react-bootstrap";
 import ComposeEmail from "./ComposeEmail";
@@ -6,11 +5,12 @@ import Inbox from "./Inbox";
 
 const Home = () => {
   const [showCompose, setShowCompose] = useState(false);
-  const [activeView, setActiveView] = useState("inbox");
+  const [activeView, setActiveView] = useState("inbox"); 
 
   const handleShow = () => setShowCompose(true);
   const handleClose = () => setShowCompose(false);
 
+  //DUMMY VALUES
   const emailCounts = {
     inbox: 5,
     unread: 2,
@@ -24,6 +24,7 @@ const Home = () => {
     if (activeView === "inbox") {
       return <Inbox />;
     }
+
     return <div className="text-center">No emails to display.</div>;
   };
 

@@ -3,6 +3,7 @@ import { Alert, Button } from "react-bootstrap";
 import { Link,useNavigate  } from "react-router-dom";
 import MainNavigation from "../MainNavigation/MainNavigation";
 
+
 const Login=()=>{
     const [isLogin,setIsLogin]=useState(false)
     const emailInputRef=useRef();
@@ -30,9 +31,9 @@ const Login=()=>{
         }
         let url;
         if(isLogin){
-            url='https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=API_KEY'
+            url=`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={API_KEY}`
         }else{
-            url="https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=API_KEY"
+            url=`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={API_KEY}`
         }
         fetch(url,{
             method:'POST',
