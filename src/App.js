@@ -6,7 +6,7 @@ import Inbox from "./Pages/Inbox";
 import Unread from "./Pages/Unread";
 // import Starred from "./Pages/Starred";
 // import Draft from "./Pages/Draft";
-// import Sent from "./Pages/Sent";
+import Send from "./Pages/Send";
 // import Archive from "./Pages/Archive";
 
 function App() {
@@ -22,10 +22,11 @@ function App() {
         <Route path="/home" element={isLoggedIn ? <Home /> : <Navigate to="/" />}>
           <Route path="inbox" element={<Inbox />} />
           <Route path="unread" element={<Unread />} />
+          <Route path="send" element={<Send />} />
           {/* 
           <Route path="starred" element={<Starred />} />
           <Route path="draft" element={<Draft />} />
-          <Route path="sent" element={<Sent />} />
+          
           <Route path="archive" element={<Archive />} /> */}
         </Route>
         <Route path="*" element={<Navigate to="/" />} />

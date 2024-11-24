@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import store from '../Store/store';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Inbox from './Inbox';
-import InboxDetails from './InboxDetails';
+import InboxDetails from './Details';
 
 // Mocking the store for testing
 jest.mock('../Store/EmailSlice', () => ({

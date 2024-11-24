@@ -109,7 +109,7 @@ describe("Login component Tests", () => {
           })
         );
       
-        // Simulate user interaction
+
         fireEvent.change(screen.getByPlaceholderText("Email"), {
           target: { value: "test@gmail.com" },
         });

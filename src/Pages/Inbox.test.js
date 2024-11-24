@@ -91,3 +91,85 @@ describe("Inbox Component", () => {
   });
   
 });
+
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import Inbox from './Inbox';
+import { deleteEmail } from '../Store/EmailSlice';
+
+// Mock the deleteEmail function
+jest.mock('../Store/EmailSlice', () => ({
+  ...jest.requireActual('../Store/EmailSlice'),
+  deleteEmail: jest.fn(),
+}));
+
+const mockStore = configureStore([thunk]);
+
+const renderWithRedux = (component, initialState) => {
+  const store = mockStore(initialState);
+  return {
+    ...render(<Provider store={store}>{component}</Provider>),
+    store,
+  };
+};
+
+describe('Inbox Component - Delete Email Functionality', () => {
+  const initialState = {
+    email: {
+      messages: [
+        { id: '1', sender: 'user1@example.com', subject: 'Hello!', read: false },
+        { id: '2', sender: 'user2@example.com', subject: 'React Testing', read: true },
+      ],
+      loading: false,
+      error: null,
+    },
+  };
+
+  it('dispatches deleteEmail action when delete button is clicked', async () => {
+    renderWithRedux(<Inbox />, { email: initialState.email });
+
+    // Verify initial state
+    const deleteButtons = screen.getAllByRole('button', { name: /delete/i });
+    expect(deleteButtons).toHaveLength(2);
+
+    // Click the delete button for the first email
+    fireEvent.click(deleteButtons[0]);
+
+    // Ensure deleteEmail is called with the correct arguments
+    await waitFor(() => {
+      expect(deleteEmail).toHaveBeenCalledWith('user1examplecom', '1');
+    });
+  });
+
+  it('removes the email from the UI after deletion', async () => {
+    const store = mockStore({
+      email: {
+        messages: [
+          { id: '1', sender: 'user1@example.com', subject: 'Hello!', read: false },
+        ],
+        loading: false,
+        error: null,
+      },
+    });
+
+    renderWithRedux(<Inbox />, { email: store.getState().email });
+
+    // Verify the email exists
+    expect(screen.getByText('user1@example.com | Hello!')).toBeInTheDocument();
+
+    // Simulate deletion
+    const deleteButton = screen.getByRole('button', { name: /delete/i });
+    fireEvent.click(deleteButton);
+
+    // Mock store update
+    store.dispatch({ type: 'email/removeEmail', payload: '1' });
+
+    // Wait for UI to update
+    await waitFor(() => {
+      expect(screen.queryByText('user1@example.com | Hello!')).not.toBeInTheDocument();
+    });
+  });
+});

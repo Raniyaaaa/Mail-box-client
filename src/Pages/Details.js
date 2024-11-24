@@ -1,12 +1,12 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 
-const InboxDetails = ({ selectedMessage,backToInbox }) => {
+const Details = ({ selectedMessage,backTo,text,person}) => {
   return (
     <div>
         <Button
             variant='Secondary'
-              onClick={backToInbox}
+              onClick={backTo}
               style={{
                 cursor: 'pointer',
                 marginBottom:'1rem'
@@ -23,7 +23,7 @@ const InboxDetails = ({ selectedMessage,backToInbox }) => {
               }}
             >
                 <div style={{ border: '1px solid #ddd', borderRadius: '5px',padding: '10px', backgroundColor: '#fff',marginBottom:'4px'}}>
-                    <strong style={{color:'grey'}}>From : </strong> {selectedMessage.sender}
+                    <strong style={{color:'grey'}}>{text} : </strong> {person}
                 </div>
                 <div style={{ border: '1px solid #ddd', borderRadius: '5px',padding: '10px',backgroundColor: '#fff',marginBottom:'4px'}}> <strong style={{color:'grey'}}>subject : </strong>{selectedMessage.subject}</div>
                 <div style={{ border: '1px solid #ddd', borderRadius: '5px', padding: '10px', backgroundColor: '#fff',marginBottom:'4px',height:'250px auto',overflow:'hidden'}}>{selectedMessage.body}</div>
@@ -32,4 +32,4 @@ const InboxDetails = ({ selectedMessage,backToInbox }) => {
   );
 };
 
-export default InboxDetails;
+export default Details;

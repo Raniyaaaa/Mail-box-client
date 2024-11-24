@@ -9,7 +9,8 @@ const Home = () => {
   const [showCompose, setShowCompose] = useState(false);
   const [activeView, setActiveView] = useState("inbox");
   const unreadCount = useSelector((state) => state.email.unreadCount);
-  const totalMessages = useSelector((state) => state.email.messages.length);
+  const totalReceivedMessages = useSelector((state) => state.email.receivedMessages.length);
+  const totalSendMessages = useSelector((state) => state.email.sendMessages.length);
   const navigate = useNavigate();
   const dispatch=useDispatch()
   const handleShow = () => setShowCompose(true);
@@ -65,7 +66,7 @@ const Home = () => {
               >
                 <span>Inbox</span>
                 <Badge bg="none" text="dark">
-                  {totalMessages}
+                  {totalReceivedMessages}
                 </Badge>
               </Alert>
               <Alert
@@ -102,14 +103,14 @@ const Home = () => {
                 </Badge>
               </Alert>
               <Alert
-                variant={activeView === "sent" ? "dark" : "primary"}
+                variant={activeView === "send" ? "dark" : "primary"}
                 className="w-100 text-center mb-0 d-flex justify-content-between align-items-center"
                 style={{ borderRadius: "0", cursor: "pointer" }}
-                onClick={() => handleNavigation("sent")}
+                onClick={() => handleNavigation("send")}
               >
-                <span>Sent</span>
+                <span>Send</span>
                 <Badge bg="none" text="dark">
-                  {0}
+                  {totalSendMessages}
                 </Badge>
               </Alert>
               <Alert
