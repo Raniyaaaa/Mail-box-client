@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const your_url = "https://mail-box-client-e699c-default-rtdb.firebaseio.com";
+
 const initialState = {
   messages: [],
   unreadCount: 0,
@@ -26,24 +26,25 @@ const emailSlice = createSlice({
       state.loading = false;
     },
     updateEmailStatus(state, action) {
-      const { id } = action.payload;
-      state.messages = state.messages.map((message) =>
-        message.id === id ? { ...message, read: true } : message
-      );
-      state.unreadCount -= 1;
+        const { id } = action.payload;
+        const email = state.messages.find((message) => message.id === id);
+        if (email && !email.read) {
+          email.read = true;
+          state.unreadCount -= 1;
+        }
     },
     addEmail(state, action) {
-      state.messages = [action.payload, ...state.messages];
+      state.messages = [...state.messages, action.payload];
     },
   },
 });
 
 export const { setLoading, setError, setEmails, updateEmailStatus, addEmail } = emailSlice.actions;
 
-export const fetchEmails = (email) => async (dispatch) => {
+export const fetchReceivedEmails = (email) => async (dispatch) => {
   dispatch(setLoading());
   try {
-    const response = await axios.get(`${your_url}/${email}/received.json`);
+    const response = await axios.get(`your_url/${email}/received.json`);
     const messagesData = response.data;
 
     const formattedEmails = messagesData
@@ -61,7 +62,7 @@ export const fetchEmails = (email) => async (dispatch) => {
 
 export const markAsRead = (email, id) => async (dispatch) => {
   try {
-    await axios.patch(`${your_url}/${email}/received/${id}.json`, { read: true });
+    await axios.patch(`your_url/${email}/received/${id}.json`, { read: true });
     dispatch(updateEmailStatus({ id }));
   } catch (error) {
     console.error('Error updating message read status', error);
@@ -70,13 +71,13 @@ export const markAsRead = (email, id) => async (dispatch) => {
 };
 
 
-export const sendEmail = (formData, sendEmail, receiveEmail) => async (dispatch) => {
+export const sendEmail = (formData, senderEmail, receiveEmail) => async (dispatch) => {
   try {
 
-    await axios.post(`${your_url}/${sendEmail}/send.json`, formData);
+    await axios.post(`your_url/${senderEmail}/send.json`, formData);
     console.log("Sender email sent successfully.");
 
-    await axios.post(`${your_url}/${receiveEmail}/received.json`, formData);
+    await axios.post(`your_url/${receiveEmail}/received.json`, formData);
     console.log("Receiver email received successfully.");
 
     dispatch(addEmail(formData));

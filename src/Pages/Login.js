@@ -2,6 +2,8 @@ import { useRef, useState } from "react"
 import { Alert, Button } from "react-bootstrap";
 import { Link,useNavigate  } from "react-router-dom";
 import MainNavigation from "../MainNavigation/MainNavigation";
+import { useDispatch } from "react-redux";
+import { login } from "../Store/AuthSlice";
 
 
 const Login=()=>{
@@ -10,6 +12,7 @@ const Login=()=>{
     const passwordInputRef=useRef();
     const confirmPasswordInputRef=useRef();
     const navigate=useNavigate();
+    const dispatch=useDispatch()
 
     function resetForm() {
         emailInputRef.current.value = '';
@@ -31,9 +34,9 @@ const Login=()=>{
         }
         let url;
         if(isLogin){
-            url=`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={API_KEY}`
+            url=`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=API_KEY`
         }else{
-            url=`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={API_KEY}`
+            url=`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=API_KEY`
         }
         fetch(url,{
             method:'POST',
@@ -60,10 +63,7 @@ const Login=()=>{
             }
         })
         .then((data)=>{
-            console.log("User has successfully Logged In")
-            console.log(data)
-            localStorage.setItem('token',data.idToken)
-            localStorage.setItem('email',data.email)
+            dispatch(login({token:data.idToken,email:data.email}))
             navigate("/home");
             resetForm();
         })

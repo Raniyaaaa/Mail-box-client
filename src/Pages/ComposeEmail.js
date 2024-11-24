@@ -5,6 +5,7 @@ import { Editor } from "react-draft-wysiwyg";
 import { Modal, Form, Button } from "react-bootstrap";
 import { BsTrash2 } from "react-icons/bs";
 import { useDispatch } from "react-redux";
+import { sendEmail } from "../Store/EmailSlice";
 
 const ComposeEmail = ({ show, onHide }) => {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -22,10 +23,10 @@ const ComposeEmail = ({ show, onHide }) => {
           sender: localStorage.getItem('email'),
         };
     
-        const sendEmail = localStorage.getItem('email') ? localStorage.getItem('email').replace(/[@.]/g, '') : '';
+        const senderEmail = localStorage.getItem('email') ? localStorage.getItem('email').replace(/[@.]/g, '') : '';
         const receiveEmail = recipient.replace(/[@.]/g, '');
     
-        dispatch(sendEmail(formData, sendEmail, receiveEmail));
+        dispatch(sendEmail(formData, senderEmail, receiveEmail));
         handleClose();
     };
 
