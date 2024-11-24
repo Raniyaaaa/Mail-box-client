@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchReceivedEmails, markAsRead } from '../Store/EmailSlice';
-import { BsCircleFill } from 'react-icons/bs';
+import { fetchReceivedEmails, markAsRead, deleteEmail } from '../Store/EmailSlice';
+import { BsCircleFill, BsTrash2Fill } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import InboxDetails from './InboxDetails';
 
 const Inbox = () => {
   const dispatch = useDispatch();
-  const { messages, loading, error } = useSelector((state) => state.email);
+  const emailState = useSelector((state) => state.email || {});
+  const { messages = [], loading = false, error = null } = emailState;
   const email = localStorage.getItem('email') ? localStorage.getItem('email').replace(/[@.]/g, '') : '';
   const [selectedMessage, setSelectedMessage] = useState(null);
   const navigate = useNavigate();
@@ -26,47 +27,30 @@ const Inbox = () => {
     handleMarkAsRead(message.id);
     setSelectedMessage(message); 
     console.log(message);
-};
+  };
+
+  const handleDeleteMessage = (messageId) => {
+    dispatch(deleteEmail(email, messageId));
+  };
 
   const backToInbox = () => {
     setSelectedMessage(null); 
   };
 
-  if (loading)
-    return (
-      <div style={{ textAlign: 'center', margin: '20px', fontSize: '18px', color: '#555' }}>
-        Loading...
-      </div>
-    );
-  if (error)
-    return (
-      <div style={{ textAlign: 'center', margin: '20px', fontSize: '18px', color: 'red' }}>
-        Error: {error}
-      </div>
-    );
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        height: '100vh',
-        fontFamily: 'Arial, sans-serif',
-        backgroundColor: '#f5f5f5',
-      }}
-    >
+    <div style={{ display: 'flex', height: '100vh', fontFamily: 'Arial, sans-serif', backgroundColor: '#f5f5f5' }}>
       <div style={{ flexGrow: 1, padding: '20px', backgroundColor: '#f9f9f9' }}>
         {!selectedMessage ? (
           <>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                borderBottom: '2px solid #ddd',
-                paddingBottom: '10px',
-                marginBottom: '15px',
-              }}
-            >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #ddd', paddingBottom: '10px', marginBottom: '15px' }}>
               <h3 style={{ margin: 0 }}>Inbox</h3>
             </div>
 
@@ -83,7 +67,7 @@ const Inbox = () => {
                       backgroundColor: message.read ? '#fff' : '#e8f0fe',
                       cursor: 'pointer',
                       padding: '10px',
-                      fontWeight: message.read? 'none':'bold'
+                      fontWeight: message.read ? 'none' : 'bold',
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -95,15 +79,27 @@ const Inbox = () => {
                       <div style={{ fontSize: '14px', color: '#555', marginRight: '8px' }}>
                         {message.sender} | {message.subject}
                       </div>
-                      <div
+                      {/* <div style={{ fontSize: '12px', color: '#888', overflow: 'hidden' }}>
+                        {message.body || 'No preview available.'}
+                      </div> */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteMessage(message.id);
+                        }}
                         style={{
+                          marginLeft: 'auto',
+                          backgroundColor: '#f44336',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '3px',
+                          cursor: 'pointer',
+                          padding: '5px 10px',
                           fontSize: '12px',
-                          color: '#888',
-                          overflow: 'hidden',
                         }}
                       >
-                        {message.body || 'No preview available.'}
-                      </div>
+                        <BsTrash2Fill />
+                      </button>
                     </div>
                   </li>
                 ))
@@ -115,7 +111,7 @@ const Inbox = () => {
             </ul>
           </>
         ) : (
-          <InboxDetails selectedMessage={selectedMessage} backToInbox={backToInbox}/>
+          <InboxDetails selectedMessage={selectedMessage} backToInbox={backToInbox} />
         )}
       </div>
     </div>

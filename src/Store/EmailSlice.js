@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-
 const initialState = {
   messages: [],
   unreadCount: 0,
@@ -26,20 +25,28 @@ const emailSlice = createSlice({
       state.loading = false;
     },
     updateEmailStatus(state, action) {
-        const { id } = action.payload;
-        const email = state.messages.find((message) => message.id === id);
-        if (email && !email.read) {
-          email.read = true;
-          state.unreadCount -= 1;
-        }
+      const { id } = action.payload;
+      const email = state.messages.find((message) => message.id === id);
+      if (email && !email.read) {
+        email.read = true;
+        state.unreadCount -= 1;
+      }
+      state.loading = false;
     },
     addEmail(state, action) {
       state.messages = [...state.messages, action.payload];
+      state.loading = false;
+    },
+    removeEmail(state, action) {
+      const messageId = action.payload;
+      state.messages = state.messages.filter((message) => message.id !== messageId);
+      state.unreadCount = state.messages.filter((message) => !message.read).length;
+      state.loading = false;
     },
   },
 });
 
-export const { setLoading, setError, setEmails, updateEmailStatus, addEmail } = emailSlice.actions;
+export const { setLoading, setError, setEmails, updateEmailStatus, addEmail, removeEmail } = emailSlice.actions;
 
 export const fetchReceivedEmails = (email) => async (dispatch) => {
   dispatch(setLoading());
@@ -60,7 +67,25 @@ export const fetchReceivedEmails = (email) => async (dispatch) => {
   }
 };
 
+
+export const deleteEmail = (email, messageId) => async (dispatch) => {
+  dispatch(setLoading());
+  try {
+
+    // const data=await axios.get(`${your_url}/${email}/received/${messageId}.json`);
+    // await axios.post(`${your_url}/${email}/deleted.json`, data.data);
+
+    await axios.delete(`your_url/${email}/received/${messageId}.json`);
+
+    dispatch(removeEmail(messageId));
+  } catch (error) {
+    dispatch(setError('Error deleting email'));
+  }
+};
+
+// Mark email as read
 export const markAsRead = (email, id) => async (dispatch) => {
+  dispatch(setLoading());
   try {
     await axios.patch(`your_url/${email}/received/${id}.json`, { read: true });
     dispatch(updateEmailStatus({ id }));
@@ -72,13 +97,14 @@ export const markAsRead = (email, id) => async (dispatch) => {
 
 
 export const sendEmail = (formData, senderEmail, receiveEmail) => async (dispatch) => {
+  dispatch(setLoading());
   try {
-
     await axios.post(`your_url/${senderEmail}/send.json`, formData);
     console.log("Sender email sent successfully.");
 
     await axios.post(`your_url/${receiveEmail}/received.json`, formData);
     console.log("Receiver email received successfully.");
+
 
     dispatch(addEmail(formData));
   } catch (error) {

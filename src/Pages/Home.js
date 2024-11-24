@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Navbar, Button, Col, Alert, Container, Row, Badge } from "react-bootstrap";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import ComposeEmail from "./ComposeEmail";
+import { logout } from "../Store/AuthSlice";
 
 const Home = () => {
   const [showCompose, setShowCompose] = useState(false);
@@ -9,7 +11,7 @@ const Home = () => {
   const unreadCount = useSelector((state) => state.email.unreadCount);
   const totalMessages = useSelector((state) => state.email.messages.length);
   const navigate = useNavigate();
-
+  const dispatch=useDispatch()
   const handleShow = () => setShowCompose(true);
   const handleClose = () => setShowCompose(false);
 
@@ -18,22 +20,30 @@ const Home = () => {
     navigate(`/home/${view}`);
   };
 
+  const deleteHandler=()=>{
+    dispatch(logout());
+    navigate('/');
+  }
+
   return (
     <>
       <Navbar
         bg="light"
         className="border-bottom"
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          height: "4rem",
-          padding: "0 1rem",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        height: "4rem",
+        padding: "0 1rem",
         }}
       >
         <Navbar.Brand className="text-primary fs-5 fw-bold">
           Welcome to your mailbox!!!
         </Navbar.Brand>
+        <Button variant="outline-danger" onClick={deleteHandler}>
+          LOG OUT
+        </Button>
       </Navbar>
       <Container fluid className="py-4">
         <Row>
@@ -120,6 +130,7 @@ const Home = () => {
           </Col>
         </Row>
       </Container>
+      <ComposeEmail show={showCompose} onHide={handleClose}/>
     </>
   );
 };

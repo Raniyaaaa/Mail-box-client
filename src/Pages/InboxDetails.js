@@ -26,7 +26,7 @@ const InboxDetails = ({ selectedMessage,backToInbox }) => {
                     <strong style={{color:'grey'}}>From : </strong> {selectedMessage.sender}
                 </div>
                 <div style={{ border: '1px solid #ddd', borderRadius: '5px',padding: '10px',backgroundColor: '#fff',marginBottom:'4px'}}> <strong style={{color:'grey'}}>subject : </strong>{selectedMessage.subject}</div>
-                <div style={{ border: '1px solid #ddd', borderRadius: '5px', padding: '10px', backgroundColor: '#fff',marginBottom:'4px',height:'250px auto'}}>{selectedMessage.body}</div>
+                <div style={{ border: '1px solid #ddd', borderRadius: '5px', padding: '10px', backgroundColor: '#fff',marginBottom:'4px',height:'250px auto',overflow:'hidden'}}>{selectedMessage.body}</div>
         </div>
     </div>
   );
